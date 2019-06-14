@@ -16,9 +16,14 @@ export default class App extends Component<Props> {
         super(props, context);
         this.state = {
             largePhotoUri: 'https://i.pinimg.com/474x/52/fe/c5/52fec54732ea8fa383f614f447aec4ac--avatar-james-cameron-blue-avatar.jpg',
+            largePhotoData : null,
+
             mediumPhotoUri: 'https://i.pinimg.com/474x/52/fe/c5/52fec54732ea8fa383f614f447aec4ac--avatar-james-cameron-blue-avatar.jpg',
             smallPhotoUri: 'https://i.pinimg.com/474x/52/fe/c5/52fec54732ea8fa383f614f447aec4ac--avatar-james-cameron-blue-avatar.jpg',
+            
+            
             photoUri : 'https://i.pinimg.com/474x/52/fe/c5/52fec54732ea8fa383f614f447aec4ac--avatar-james-cameron-blue-avatar.jpg',
+            photoData : null,
 
             offsetX : 0,
             offsetY : 0,
@@ -32,16 +37,10 @@ export default class App extends Component<Props> {
         }
     }
 
-    changePhoto(avatar, x){
-        console.log('Image base64 string: ', avatar);
-        console.log('Otro: ', x);
-        this.setState({ photoUri: `data:image/png;base64,${avatar}` });
-        
-    }
-
-    generatePreview(){
-        console.log(this.state.photoUri)
-        //this.forceUpdate()
+    changePhoto(uri, data){
+        console.log('Image Uri: ', uri);
+        console.log('Base64 Data: ', data);
+        this.setState({ photoUri: uri, photoData: `data:image/png;base64,${data}` });
     }
 
     zoomIn(){
@@ -54,6 +53,11 @@ export default class App extends Component<Props> {
 
     processResponse(response){
         console.log("Response: ", response)
+        if (response){
+            let { width, height, fileName, fileSize, isVertical, origURL, timestamp, uri } = response;
+            this.changePhotoUri(uri)
+        }
+        
     }
 
     render() {
@@ -66,7 +70,7 @@ export default class App extends Component<Props> {
                         <Col style={styles.pickerCol}>
                             <Text style={styles.selectPictureText}>Select Picture</Text>
                             <PhotoUpload 
-                                onPhotoSelect={ (avatar, x) => this.changePhoto(avatar, x) }  
+                                //onPhotoSelect={ (avatar, x) => this.changePhotoBase64(avatar, x) }  
                                 onResponse={ (response) => this.processResponse(response) }
                             >
                                 <Image
